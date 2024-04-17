@@ -13,6 +13,9 @@
             background-image: url("{{ url_for('static', filename='bg.jpg') }}");
             background-size: cover;
         }
+        .center-text {
+            text-align: center;
+        }
     </style>
     <title>Курсы математики</title>
 </head>
@@ -22,6 +25,7 @@
 <div class="asd"><h>на обучение курсу математики</h></div>
 <div>
     <form class="login_form" method="post" action="/main">
+        <!-- Форма регистрации -->
         <input type="text" class="form-control" id="surname" aria-describedby="emailHelp" placeholder="Введите фамилию" name="surname" required>
         <input type="text" class="form-control" id="name" placeholder="Введите имя" name="name" required>
         <input type="text" class="form-control" id="patronymic" placeholder="Введите отчество" name="patronymic" required>
@@ -58,7 +62,7 @@
             <label for="about">Почему вы решили начать обучаться курсу математики:</label>
             <textarea class="form-control" id="about" rows="3" name="about" required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary" style="margin-top: 15px;" disabled>Далее</button>
+        <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Далее</button>
     </form>
 </div>
 </body>
