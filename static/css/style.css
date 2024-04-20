@@ -44,6 +44,7 @@ h1 img {
     font-weight: bold;
     margin-bottom: 20px;
 }
+
 form.login_form {
     margin-left: auto;
     margin-right: auto;
@@ -68,4 +69,22 @@ form.login_form {
   align-items: center;
   font-size: 20px;
   font-weight: 400;
+}
+
+.lesson-links .list-group-item {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+    margin-bottom: 5px;
+    padding: 8px 12px;
+}
+
+.lesson-links .list-group-item:hover {
+    background-color: #0056b3;
+    color: #fff;
+    border-color: #0056b3;
+}
+
+body {
+    background-color: #C5D0E6;
 }
