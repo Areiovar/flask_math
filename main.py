@@ -26,7 +26,6 @@ def index():
 
 @app.route('/main', methods=['POST'])
 def main():
-    # Получение данных из формы
     surname = request.form.get('surname')
     name = request.form.get('name')
     patronymic = request.form.get('patronymic')
@@ -35,26 +34,13 @@ def main():
     sex = request.form.get('sex')
     about = request.form.get('about')
 
-    # Проверка полученных данных
-    print("Surname:", surname)
-    print("Name:", name)
-    print("Patronymic:", patronymic)
-    print("Birthdate:", birthdate)
-    print("Education:", education)
-    print("Sex:", sex)
-    print("About:", about)
-
-    # Вставка данных в базу данных
     insert_data(surname, name, patronymic, birthdate, education, sex, about)
 
-    # Перенаправление на страницу профиля
     return redirect(url_for('profile', surname=surname, name=name, patronymic=patronymic, birthdate=birthdate,
                             education=education, sex=sex, about=about))
 
-
 @app.route('/account')
 def profile():
-    # Получение данных из URL
     surname = request.args.get('surname')
     name = request.args.get('name')
     patronymic = request.args.get('patronymic')
@@ -62,19 +48,47 @@ def profile():
     education = request.args.get('education')
     sex = request.args.get('sex')
     about = request.args.get('about')
-    conn = sqlite3.connect ('userdata.db')
-    c = conn.cursor ()
-    c.execute ('SELECT * FROM users ORDER BY id DESC LIMIT 1')
-    user_data = c.fetchone ()
-    conn.close ()
 
-    # Отображение шаблона с передачей данных
+    conn = sqlite3.connect('userdata.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM users ORDER BY id DESC LIMIT 1')
+    user_data = c.fetchone()
+    conn.close()
+
     return render_template('profile.html', surname=surname, name=name, patronymic=patronymic,
                            birthdate=birthdate, education=education, sex=sex, about=about)
 
 @app.route('/course')
 def course():
-    return 'asd'
+    return render_template('course.html')
+
+@app.route('/course/lesson1')
+def lesson1():
+    return render_template('lesson1.html')
+
+@app.route('/course/lesson2')
+def lesson2():
+    return render_template('lesson2.html')
+
+@app.route('/course/lesson3')
+def lesson3():
+    return render_template('lesson3.html')
+
+@app.route('/course/lesson4')
+def lesson4():
+    return render_template('lesson4.html')
+
+@app.route('/course/lesson5')
+def lesson5():
+    return render_template('lesson5.html')
+
+@app.route('/course/lesson6')
+def lesson6():
+    return render_template('lesson6.html')
+
+@app.route('/course/lesson7')
+def lesson7():
+    return render_template('lesson7.html')
 
 
 if __name__ == '__main__':
