@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+          crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='bg.jpg') }}");
+            background-size: cover;
+        }
+        .center-text {
+            text-align: center;
+        }
+    </style>
+    <title>Login</title>
+</head>
+<body>
+<div class="center-both">
+    <h>Авторизация</h></div>
+<div class="asd"><h>Введите имя и дату рождения</h></div>
+<div>
+    <form class="login_form" method="post" action="/login">
+        <!-- Login Form -->
+        <input type="text" class="form-control" id="name" placeholder="Введите имя" name="name" required>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Введите пароль" required>
+        <a href="http://127.0.0.1:8080/course" class="btn btn-primary" style="margin-top: 15px;">Войти</a>
+
+    </form>
+</div>
+</body>
+</html>
