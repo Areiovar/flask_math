@@ -25,38 +25,17 @@
 <div class="asd"><h>на обучение курсу математики</h></div>
 <div>
     <form class="login_form" method="post" action="/main">
-        <!-- Форма регистрации -->
         <input type="text" class="form-control" id="surname" aria-describedby="emailHelp" placeholder="Введите фамилию" name="surname" required>
         <input type="text" class="form-control" id="name" placeholder="Введите имя" name="name" required>
         <input type="text" class="form-control" id="patronymic" placeholder="Введите отчество" name="patronymic" required>
         <input type="date" class="form-control" id="birthdate" name="birthdate" placeholder="Дата рождения" required>
-        <div class="form-group">
-            <label for="education">Какое у вас образование?</label>
-            <select class="form-control" id="education" name="education" required>
-                <option>Дошкольное</option>
-                <option>Начальное общее — 1—4 классы</option>
-                <option>Основное общее — 5—9 классы</option>
-                <option>Среднее общее — 10—11 классы</option>
-                <option>Среднее профессиональное</option>
-                <option>Высшее I степени — бакалавриат</option>
-                <option>Высшее II степени — специалитет, магистратура</option>
-                <option>Высшее III степени — подготовка кадров высшей квалификации</option>
-            </select>
-        </div>
+        <input type="password" class="form-control" id="password" placeholder="Введите пароль" name="password" required>
         <div class="form-group" style="margin-top: 15px;">
-            <label>Укажите пол</label>
-            <div class="form-check" style="margin-top: 15px;">
-                <input class="form-check-input" type="radio" name="sex" id="male" value="male" checked required>
-                <label class="form-check-label">
-                    Мужской
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="sex" id="female" value="female" required>
-                <label class="form-check-label">
-                    Женский
-                </label>
-            </div>
+            <label for="gender">Выберите пол:</label>
+            <select class="form-control" id="gender" name="sex" required>
+                <option value="male">Мужской</option>
+                <option value="female">Женский</option>
+            </select>
         </div>
         <div class="form-group" style="margin-top: 15px;">
             <label for="about">Почему вы решили начать обучаться курсу математики:</label>
@@ -64,6 +43,10 @@
         </div>
         <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Далее</button>
     </form>
+    <!-- Добавляем ссылку для авторизации -->
+    <div class="center-text" style="margin-top: 15px;">
+        <a href="/login">У вас уже есть аккаунт? Авторизоваться</a>
+    </div>
 </div>
 </body>
 </html>
