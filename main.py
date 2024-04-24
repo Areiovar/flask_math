@@ -2,6 +2,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, redirect, url_for, Markup
 
 import sqlite3
+import random
+import math
 
 app = Flask(__name__)
 
@@ -22,6 +24,15 @@ def insert_data(surname, name, patronymic, birthdate, password, sex, about):
                  VALUES (?, ?, ?, ?, ?, ?, ?)''', (surname, name, patronymic, birthdate, hashed_password, sex, about))
     conn.commit()
     conn.close()
+
+def generate_coefficients():
+    while True:
+        a = random.randint(1, 10)
+        b = random.randint(1, 10)
+        c = random.randint(1, 10)
+        discriminant = b**2 - 4 * a * c
+        if 0 <= discriminant == math.isqrt(discriminant) ** 2:
+            return a, b, c
 
 @app.route('/')
 def index():
@@ -72,64 +83,67 @@ def course():
 
 from flask import Markup
 
-
-@app.route ('/course/lesson1')
+@app.route('/course/lesson1')
 def lesson1():
     title = "Lesson 1"
     lesson_title = "Урок 1: Решение квадратных уравнений"
-    lesson_content = """
-        <p>Уравнение вида ax2+bx+c=0, где а, b и c – некоторые числа, причем а <> 0, а х – переменная, называется квадратным.<br><br>
-        Примеры: 2х2+2х+1=0; -3х2+4х=0; 9х2-25=0. В каждом из уравнений назвать, чему равны коэффициенты.<br><br>
-        Определение. Если в уравнении вида ax2+bx+c=0 хотя бы один из коэффициентов b или с равен 0, то уравнение называют неполным квадратным.<br><br>
-        1. Если с=0, то уравнение имеет вид ax2+bx=0. Оно решается разложением на множители. Уравнение данного вида всегда имеет два корня, всегда один из них равен нулю.<br><br>
-        Пример: 4х2+16х=0 Решить самостоятельно:<br>
-        4х (х+4) = 0<br>
-        3х2-6х=0<br>
-        4х=0 или х+4=0<br>
-        х=0 х= -4<br>
-        Ответ: х=0, х= -4.<br><br>
-        2. Если b=0, то уравнение имеет вид ax2+c=0. Оно решается только тогда, когда у коэффициентов а и с разные знаки. При решении уравнений применяет формулу разности квадратов.<br><br>
-        Пример: 1) 1-4y2=0 2) 6х2+12=0<br>
+
+    a, b, c = generate_coefficients()
+    correct_answer = max(round((-b + (b**2 - 4*a*c)**0.5) / (2*a)), round((-b - (b**2 - 4*a*c)**0.5) / (2*a)))
+
+    lesson_content = f"""
+        <p>Уравнение вида ax&sup2;+bx+c=0, где а, b и c – некоторые числа, причем а ≠ 0, а х – переменная, называется квадратным.<br><br>
+        Примеры: 2x&sup2;+2x+1=0; -3x&sup2;+4x=0; 9x&sup2;-25=0. В каждом из уравнений назвать, чему равны коэффициенты.<br><br>
+        Определение. Если в уравнении вида ax&sup2;+bx+c=0 хотя бы один из коэффициентов b или c равен 0, то уравнение называют неполным квадратным.<br><br>
+        1. Если c=0, то уравнение имеет вид ax&sup2;+bx=0. Оно решается разложением на множители. Уравнение данного вида всегда имеет два корня, всегда один из них равен нулю.<br><br>
+        Пример: 4x&sup2;+16x=0 Решить самостоятельно:<br>
+        4x (x+4) = 0<br>
+        3x&sup2;-6x=0<br>
+        4x=0 или x+4=0<br>
+        x=0 x= -4<br>
+        Ответ: x=0, x=-4.<br><br>
+        2. Если b=0, то уравнение имеет вид ax&sup2;+c=0. Оно решается только тогда, когда у коэффициентов а и с разные знаки. При решении уравнений применяет формулу разности квадратов.<br><br>
+        Пример: 1) 1-4y&sup2;=0 2) 6x&sup2;+12=0<br>
         (1-2y) (1+2y) =0 Решений нет, так как это сумма квадратов, а не разность.<br>
         1-2y=0 или 1+2y=0<br>
-        Решить самостоятельно -х2+3=0<br>
+        Решить самостоятельно -x&sup2;+3=0<br>
         2y=1 2y= -1<br>
-        (3-х)(3+х)=0<br>
-        y=0,5 y= -0,5<br>
-        3-х=0 или 3+х=0<br>
-        Ответ: y=0,5; y= -0,5 х= 3 х=-3<br><br>
-        3. Если b=0 и с=0, то уравнение имеет вид ах2=0. Уравнение имеет единственный корень х=0.<br><br>
+        (3-x)(3+x)=0<br>
+        y=0,5 y=-0,5<br>
+        3-x=0 или 3+x=0<br>
+        Ответ: y=0,5; y=-0,5; x=3; x=-3.<br><br>
+        3. Если b=0 и с=0, то уравнение имеет вид ax&sup2;=0. Уравнение имеет единственный корень x=0.<br><br>
         Решение полных квадратных уравнений<br><br>
-        Определение. Выражение вида D=b2-4ac называют дискриминантом квадратного уравнения.<br><br>
+        Определение. Выражение вида D=b&sup2;-4ac называют дискриминантом квадратного уравнения.<br><br>
         Примеры. Вычислите дискриминант<br><br>
-        2х2+3х+1=0, a=2, b=3, c=1 D=32-4* 2* 4= -23<br>
-        5х2-2х-1=0, a=5, b=-2, c=-1 D=(-2)2-4* 5* (-1)= 24</p>
-
-        <!-- Add Input Field -->
+        2x&sup2;+3x+1=0, a=2, b=3, c=1 D=3&sup2;-4* 2* 4= -23<br>
+        5x&sup2;-2x-1=0, a=5, b=-2, c=-1 D=(-2)&sup2;-4* 5* (-1)= 24</p>
+        <p>Уравнение вида {a}x&sup2;+{b}x+{c}=0, где а, b и c – некоторые числа, причем а ≠ 0, а х – переменная, называется квадратным.<br><br>
+        Решите уравнение и введите больший из корней:</p>
         <div>
-            <label for="answer">Enter your answer:</label>
+            <label for="answer">Введите больший из корней:</label>
             <input type="text" id="answer" name="answer">
-            <!-- Add Check Button -->
             <button onclick="checkAnswer()">Check</button>
-            <!-- Add Result Display -->
             <p id="result"></p>
         </div>
 
         <script>
-            function checkAnswer() {
+            function checkAnswer() {{
                 var userAnswer = document.getElementById("answer").value;
-                var correctAnswer = 3;
-                userAnswer = parseFloat(userAnswer);
-                if (userAnswer === correctAnswer) {
-                    document.getElementById("result").innerHTML = "Correct!";
-                } else {
-                    document.getElementById("result").innerHTML = "Incorrect. Try again.";
-                }
-            }
+                var correctAnswer = {correct_answer};
+                userAnswer = parseInt(userAnswer);
+                if (userAnswer === correctAnswer) {{
+                    document.getElementById("result").innerHTML = "Правильно";
+                }} else {{
+                    document.getElementById("result").innerHTML = "Неправильно. Попробуйте еще раз!";
+                }}
+            }}
         </script>
     """
-    return render_template ('lesson.html', title=title, lesson_title=lesson_title,
-                            lesson_content=Markup (lesson_content))
+    return render_template('lesson.html', title=title, lesson_title=lesson_title,
+                            lesson_content=Markup(lesson_content))
+
+
 
 
 @app.route('/course/lesson2')
@@ -242,6 +256,7 @@ def lesson7():
     """
 
     return render_template ('lesson.html', title=title, lesson_title=lesson_title, lesson_content=Markup(lesson_content))
+
 
 
 if __name__ == '__main__':
