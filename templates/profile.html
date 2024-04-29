@@ -1,60 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Профиль</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>
-        body {
-            background-image: url("{{ url_for('static', filename='bg.jpg') }}");
-            background-size: cover;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1><img src="{{ url_for('static', filename='profile.png') }}" alt="Profile Photo"> Профиль</h1>
-        <div class="success-message">
-            Вы успешно зарегистрировались!
+{% extends "base.html" %}
+
+{% block title %}
+    Профиль
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1><img src="{{ url_for('static', filename='profile.png') }}" alt="Profile Photo"> Профиль</h1>
+    <div class="success-message">
+        Вы успешно зарегистрировались!
+    </div>
+    <div class="profile-info">
+        <div class="profile-info-item">
+            <label>Фамилия:</label> {{ surname }}
         </div>
-        <div class="profile-info">
-            <div class="profile-info-item">
-                <label>Фамилия:</label> {{ surname }}
-            </div>
-            <div class="profile-info-item">
-                <label>Имя:</label> {{ name }}
-            </div>
-            <div class="profile-info-item">
-                <label>Отчество:</label> {{ patronymic }}
-            </div>
-            <div class="profile-info-item">
-                <label>Дата рождения:</label> {{ birthdate }}
-            </div>
-            <div class="profile-info-item">
-                <label>Пароль:</label> {{ password }}
-            </div>
-            <div class="profile-info-item">
-                <label>Пол:</label>
-                {% if sex == "male" %}
-                    Мужской
-                {% elif sex == "female" %}
-                    Женский
-                {% else %}
-                    Не указан
-                {% endif %}
-            </div>
-            <div сlass="profile-info-item">
-                <label><strong>Почему вы решили начать обучаться курсу математики:</strong></label> {{ about }}
-            </div>
+        <div class="profile-info-item">
+            <label>Имя:</label> {{ name }}
         </div>
-        <div style="text-align: center;">
-            <a href="/course">Перейти к курсу</a>
+        <div class="profile-info-item">
+            <label>Отчество:</label> {{ patronymic }}
+        </div>
+        <div class="profile-info-item">
+            <label>Дата рождения:</label> {{ birthdate }}
+        </div>
+        <div class="profile-info-item">
+            <label>Пароль:</label> {{ password }}
+        </div>
+        <div class="profile-info-item">
+            <label>Пол:</label>
+            {% if sex == "male" %}
+                Мужской
+            {% elif sex == "female" %}
+                Женский
+            {% else %}
+                Не указан
+            {% endif %}
+        </div>
+        <div class="profile-info-item">
+            <label><strong>Почему вы решили начать обучаться курсу математики:</strong></label> {{ about }}
         </div>
     </div>
-</body>
-</html>
+    <div style="text-align: center;">
+        <a href="/course">Перейти к курсу</a>
+    </div>
+</div>
+{% endblock %}
