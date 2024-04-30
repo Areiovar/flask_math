@@ -1,15 +1,10 @@
-# -*- coding: utf8 -*-
-
 from werkzeug.security import generate_password_hash
-from flask import Flask, render_template, request, redirect, url_for, jsonify
-from markupsafe import Markup
+from flask import Flask, render_template, request, redirect, url_for, Markup, jsonify
 import sqlite3
 import random
 import math
-from api import api
 
 app = Flask(__name__)
-app.register_blueprint(api)
 
 def create_table():
     conn = sqlite3.connect('userdata.db')
@@ -29,10 +24,6 @@ def insert_data(surname, name, patronymic, birthdate, password, sex, about):
                  VALUES (?, ?, ?, ?, ?, ?, ?)''', (surname, name, patronymic, birthdate, hashed_password, sex, about))
     conn.commit()
     conn.close()
-
-
-def generate_deck_size():
-    return random.randint(30, 100)
 
 
 def generate_coefficients():
@@ -96,6 +87,24 @@ def course():
     return render_template('course.html')
 
 
+@app.route('/course/lesson1', methods=['POST'])
+def lesson1_post():
+    user_answer = request.form.get('answer')
+    correct_answer = request.form.get('correct_answer')
+
+    # Validate the user's answer
+    if user_answer is not None and correct_answer is not None:
+        try:
+            user_answer = int(user_answer)
+            correct_answer = int(correct_answer)
+            if user_answer == correct_answer:
+                return jsonify({'result': 'correct'})
+            else:
+                return jsonify({'result': 'incorrect'})
+        except ValueError:
+            return jsonify({'error': 'Invalid input. Please enter a valid number.'})
+    else:
+        return jsonify({'error': 'Missing user answer or correct answer.'})
 
 
 @app.route('/course/lesson1')
@@ -108,57 +117,76 @@ def lesson1():
                          round((-b - (b**2 - 4*a*c)**0.5) / (2*a)))
 
     lesson_content = f"""
-        <p>Уравнение вида ax&sup2;+bx+c=0, где а, b и c – некоторые числа, причем а ≠ 0, а х – переменная, называется квадратным.<br><br>
-        Примеры: 2x&sup2;+2x+1=0; -3x&sup2;+4x=0; 9x&sup2;-25=0. В каждом из уравнений назвать, чему равны коэффициенты.<br><br>
-        Определение. Если в уравнении вида ax&sup2;+bx+c=0 хотя бы один из коэффициентов b или c равен 0, то уравнение называют неполным квадратным.<br><br>
-        1. Если c=0, то уравнение имеет вид ax&sup2;+bx=0. Оно решается разложением на множители. Уравнение данного вида всегда имеет два корня, всегда один из них равен нулю.<br><br> 
-        Пример: 4x&sup2;+16x=0 Решить самостоятельно:<br>
-        4x (x+4) = 0<br>
-        3x&sup2;-6x=0<br>
-        4x=0 или x+4=0<br>
-        x=0 x= -4<br>
-        Ответ: x=0, x=-4.<br><br>
-        2. Если b=0, то уравнение имеет вид ax&sup2;+c=0. Оно решается только тогда, когда у коэффициентов а и с разные знаки. При решении уравнений применяет формулу разности квадратов.<br><br>
-        Пример: 1) 1-4y&sup2;=0 2) 6x&sup2;+12=0<br>
-        (1-2y) (1+2y) =0 Решений нет, так как это сумма квадратов, а не разность.<br>
-        1-2y=0 или 1+2y=0<br>
-        Решить самостоятельно -x&sup2;+3=0<br>
-        2y=1 2y= -1<br>
-        (3-x)(3+x)=0<br>
-        y=0,5 y=-0,5<br>
-        3-x=0 или 3+x=0<br>
-        Ответ: y=0,5; y=-0,5; x=3; x=-3.<br><br>
-        3. Если b=0 и с=0, то уравнение имеет вид ax&sup2;=0. Уравнение имеет единственный корень x=0.<br><br>
-        Решение полных квадратных уравнений<br><br>
-        Определение. Выражение вида D=b&sup2;-4ac называют дискриминантом квадратного уравнения.<br><br>
-        Примеры. Вычислите дискриминант<br><br>
-        2x&sup2;+3x+1=0, a=2, b=3, c=1 D=3&sup2;-4* 2* 4= -23<br>
-        5x&sup2;-2x-1=0, a=5, b=-2, c=-1 D=(-2)&sup2;-4* 5* (-1)= 24</p>
-        <p>Уравнение вида {a}x&sup2;+{b}x+{c}=0, где а, b и c – некоторые числа, причем а ≠ 0, а х – переменная, называется квадратным.<br><br>
-        Решите уравнение и введите больший из корней:</p>
-        <div>
+            <p>Уравнение вида ax&sup2;+bx+c=0, где а, b и c – некоторые числа, причем а ≠ 0, а х – переменная, называется квадратным.<br><br>
+            Примеры: 2x&sup2;+2x+1=0; -3x&sup2;+4x=0; 9x&sup2;-25=0. В каждом из уравнений назвать, чему равны коэффициенты.<br><br>
+            Определение. Если в уравнении вида ax&sup2;+bx+c=0 хотя бы один из коэффициентов b или c равен 0, то уравнение называют неполным квадратным.<br><br>
+            1. Если c=0, то уравнение имеет вид ax&sup2;+bx=0. Оно решается разложением на множители. Уравнение данного вида всегда имеет два корня, всегда один из них равен нулю.<br><br> 
+            Пример: 4x&sup2;+16x=0 Решить самостоятельно:<br>
+            4x (x+4) = 0<br>
+            3x&sup2;-6x=0<br>
+            4x=0 или x+4=0<br>
+            x=0 x= -4<br>
+            Ответ: x=0, x=-4.<br><br>
+            2. Если b=0, то уравнение имеет вид ax&sup2;+c=0. Оно решается только тогда, когда у коэффициентов а и с разные знаки. При решении уравнений применяет формулу разности квадратов.<br><br>
+            Пример: 1) 1-4y&sup2;=0 2) 6x&sup2;+12=0<br>
+            (1-2y) (1+2y) =0 Решений нет, так как это сумма квадратов, а не разность.<br>
+            1-2y=0 или 1+2y=0<br>
+            Решить самостоятельно -x&sup2;+3=0<br>
+            2y=1 2y= -1<br>
+            (3-x)(3+x)=0<br>
+            y=0,5 y=-0,5<br>
+            3-x=0 или 3+x=0<br>
+            Ответ: y=0,5; y=-0,5; x=3; x=-3.<br><br>
+            3. Если b=0 и с=0, то уравнение имеет вид ax&sup2;=0. Уравнение имеет единственный корень x=0.<br><br>
+            Решение полных квадратных уравнений<br><br>
+            Определение. Выражение вида D=b&sup2;-4ac называют дискриминантом квадратного уравнения.<br><br>
+            Примеры. Вычислите дискриминант<br><br>
+            2x&sup2;+3x+1=0, a=2, b=3, c=1 D=3&sup2;-4* 2* 4= -23<br>
+            5x&sup2;-2x-1=0, a=5, b=-2, c=-1 D=(-2)&sup2;-4* 5* (-1)= 24</p>
+            <p>Уравнение вида {a}x&sup2;+{b}x+{c}=0, где а, b и c – некоторые числа, причем а ≠ 0, а х – переменная, называется квадратным.<br><br>
+            Решите уравнение и введите больший из корней:</p>
+
+
+        <form id="lessonForm">
             <label for="answer">Введите больший из корней:</label>
             <input type="text" id="answer" name="answer">
-            <button onclick="checkAnswer()">Проверить</button>
+            <input type="hidden" id="correctAnswer" name="correct_answer" value="{correct_answer}">
+            <button type="button" onclick="checkAnswer()">Проверить</button>
             <p id="result"></p>
-        </div>
+        </form>
 
         <script>
             function checkAnswer() {{
                 var userAnswer = document.getElementById("answer").value;
-                var correctAnswer = {correct_answer};
+                var correctAnswer = document.getElementById("correctAnswer").value;
                 userAnswer = parseInt(userAnswer);
-                if (userAnswer === correctAnswer) {{
-                    document.getElementById("result").innerHTML = "Правильно";
+                if (!isNaN(userAnswer)) {{
+                    fetch('/course/lesson1', {{
+                        method: 'POST',
+                        body: new URLSearchParams({{ answer: userAnswer, correct_answer: correctAnswer }}),
+                        headers: {{ 'Content-Type': 'application/x-www-form-urlencoded' }}
+                    }})
+                    .then(response => response.json())
+                    .then(data => {{
+                        if (data.result === 'correct') {{
+                            document.getElementById("result").innerHTML = "Правильно";
+                        }} else if (data.result === 'incorrect') {{
+                            document.getElementById("result").innerHTML = "Неправильно. Попробуйте еще раз!";
+                        }} else if (data.error) {{
+                            document.getElementById("result").innerHTML = data.error;
+                        }}
+                    }})
+                    .catch(error => {{
+                        console.error('Error:', error);
+                    }});
                 }} else {{
-                    document.getElementById("result").innerHTML = "Неправильно. Попробуйте еще раз!";
+                    document.getElementById("result").innerHTML = "Пожалуйста, введите число.";
                 }}
             }}
         </script>
     """
     return render_template('lesson.html', title=title, lesson_title=lesson_title,
                            lesson_content=Markup(lesson_content))
-
 
 @app.route('/course/lesson2')
 def lesson2():
@@ -449,4 +477,4 @@ def lesson7():
 
 if __name__ == '__main__':
     create_table()
-    app.run('localhost')
+    app.run('127.0.0.1', 8080)
