@@ -10,7 +10,7 @@ def get_users():
     c.execute('SELECT * FROM users ORDER BY id')
     users = c.fetchall()
     conn.close()
-    user_list = [{'id': user[0], 'surname': user[1], 'name': user[2], 'patronymic': user[3],
+    user_list = [{'id': user[0], 'surname': user[1], 'name': user[2], 'login': user[3],
                   'birthdate': user[4], 'sex': user[6]} for user in users]
     response = jsonify(user_list)
     response.headers.add('Content-Type', 'application/json')
