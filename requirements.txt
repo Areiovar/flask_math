@@ -1,3 +1,6 @@
 flask
 sqlite3
 random
+werkzeug
+math
+markupsafe
