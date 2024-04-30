@@ -22,15 +22,21 @@
 <body>
 <div class="center-both">
     <h>Авторизация</h></div>
-<div class="asd"><h>Введите имя и дату рождения</h></div>
+<div class="asd"><h>Введите логин и пароль</h></div>
 <div>
     <form class="login_form" method="post" action="/login">
         <!-- Login Form -->
-        <input type="text" class="form-control" id="name" placeholder="Введите имя" name="name" required>
+        <input type="text" class="form-control" id="login" placeholder="Введите логин" name="login" required>
         <input type="password" class="form-control" id="password" name="password" placeholder="Введите пароль" required>
-        <a href="http://127.0.0.1:8080/course" class="btn btn-primary" style="margin-top: 15px;">Войти</a>
-
+        <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Войти</button>
+        {% if error %}
+            <div class="alert alert-danger" role="alert" style="margin-top: 15px;">
+                {{ error }}
+            </div>
+        {% endif %}
     </form>
 </div>
+
 </body>
 </html>
+``
