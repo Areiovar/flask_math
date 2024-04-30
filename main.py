@@ -1,5 +1,8 @@
+# -*- coding: utf8 -*-
+
 from werkzeug.security import generate_password_hash
-from flask import Flask, render_template, request, redirect, url_for, Markup, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+from markupsafe import Markup
 import sqlite3
 import random
 import math
@@ -446,4 +449,4 @@ def lesson7():
 
 if __name__ == '__main__':
     create_table()
-    app.run('127.0.0.1', 8080)
+    app.run('localhost')
