@@ -1,29 +1,35 @@
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, redirect, url_for, Markup, jsonify
 import sqlite3
 import random
 import math
+from api import api
 
 app = Flask(__name__)
+app.register_blueprint(api)
+
 
 def create_table():
     conn = sqlite3.connect('userdata.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS users
-                 (id INTEGER PRIMARY KEY, surname TEXT, name TEXT, patronymic TEXT,
+                 (id INTEGER PRIMARY KEY, surname TEXT, name TEXT, login TEXT,
                  birthdate TEXT, password TEXT, sex TEXT, about TEXT)''')
     conn.commit()
     conn.close()
 
+def generate_deck_size():
+    return random.randint(30, 100)
 
-def insert_data(surname, name, patronymic, birthdate, password, sex, about):
+def insert_data(surname, name, login, birthdate, password, sex, about):
     hashed_password = generate_password_hash(password)
     conn = sqlite3.connect('userdata.db')
     c = conn.cursor()
-    c.execute('''INSERT INTO users (surname, name, patronymic, birthdate, password, sex, about)
-                 VALUES (?, ?, ?, ?, ?, ?, ?)''', (surname, name, patronymic, birthdate, hashed_password, sex, about))
+    c.execute('''INSERT INTO users (surname, name, login, birthdate, password, sex, about)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)''', (surname, name, login, birthdate, hashed_password, sex, about))
     conn.commit()
     conn.close()
+
 
 
 def generate_coefficients():
@@ -41,24 +47,45 @@ def index():
     return render_template('bootstrap_template.html')
 
 
-@app.route('/login')
+@app.route ('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    if request.method == 'POST':
+        login = request.form.get ('login')
+        password = request.form.get ('password')
+
+        if login and password:
+            conn = sqlite3.connect ('userdata.db')
+            c = conn.cursor ()
+            c.execute ('SELECT * FROM users WHERE login = ?', (login,))
+            user = c.fetchone ()
+            conn.close ()
+
+            if user:
+                if check_password_hash (user[5], password):
+                    return redirect (url_for ('course'))
+                else:
+                    return render_template ('login.html', error="Неверный логин или пароль.")
+            else:
+                return render_template ('login.html', error="Неверный логин или пароль.")
+
+        else:
+            return render_template ('login.html', error="Пожалуйста, введите логин и пароль.")
+    return render_template ('login.html')
 
 
 @app.route('/main', methods=['POST'])
 def main():
     surname = request.form.get('surname')
     name = request.form.get('name')
-    patronymic = request.form.get('patronymic')
+    login = request.form.get('login')
     birthdate = request.form.get('birthdate')
     password = request.form.get('password')
     sex = request.form.get('sex')
     about = request.form.get('about')
 
-    insert_data(surname, name, patronymic, birthdate, password, sex, about)
+    insert_data(surname, name, login, birthdate, password, sex, about)
 
-    return redirect(url_for('profile', surname=surname, name=name, patronymic=patronymic, birthdate=birthdate,
+    return redirect(url_for('profile', surname=surname, name=name, login=login, birthdate=birthdate,
                             password=password, sex=sex, about=about))
 
 
@@ -66,7 +93,7 @@ def main():
 def profile():
     surname = request.args.get('surname')
     name = request.args.get('name')
-    patronymic = request.args.get('patronymic')
+    login = request.args.get('login')
     birthdate = request.args.get('birthdate')
     password = request.args.get('password')
     sex = request.args.get('sex')
@@ -78,7 +105,7 @@ def profile():
     user_data = c.fetchone()
     conn.close()
 
-    return render_template('profile.html', surname=surname, name=name, patronymic=patronymic,
+    return render_template('profile.html', surname=surname, name=name, login=login,
                            birthdate=birthdate, password=password, sex=sex, about=about)
 
 
@@ -92,7 +119,6 @@ def lesson1_post():
     user_answer = request.form.get('answer')
     correct_answer = request.form.get('correct_answer')
 
-    # Validate the user's answer
     if user_answer is not None and correct_answer is not None:
         try:
             user_answer = int(user_answer)
@@ -187,6 +213,7 @@ def lesson1():
     """
     return render_template('lesson.html', title=title, lesson_title=lesson_title,
                            lesson_content=Markup(lesson_content))
+
 
 @app.route('/course/lesson2')
 def lesson2():
