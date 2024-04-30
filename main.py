@@ -1,11 +1,12 @@
 from werkzeug.security import generate_password_hash
-from flask import Flask, render_template, request, redirect, url_for, Markup
+from flask import Flask, render_template, request, redirect, url_for, Markup, jsonify
 import sqlite3
 import random
 import math
+from api import api
 
 app = Flask(__name__)
-
+app.register_blueprint(api)
 
 def create_table():
     conn = sqlite3.connect('userdata.db')
@@ -90,6 +91,8 @@ def profile():
 @app.route('/course')
 def course():
     return render_template('course.html')
+
+
 
 
 @app.route('/course/lesson1')
@@ -438,6 +441,7 @@ def lesson7():
     """
 
     return render_template('lesson.html', title=title, lesson_title=lesson_title, lesson_content=Markup(lesson_content))
+
 
 
 if __name__ == '__main__':
